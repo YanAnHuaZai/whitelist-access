@@ -18,7 +18,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
@@ -31,7 +30,7 @@ import java.util.Objects;
 @Aspect
 @Component
 public class WhitelistAccessResolveAspect {
-    Logger log = LoggerFactory.getLogger(ConfigByEnvironment.class);
+    Logger log = LoggerFactory.getLogger(WhitelistAccessResolveAspect.class);
 
     /** 白名单大开关 */
     private static final String WHITELIST_SWITCH = "whitelist.switch";
@@ -52,9 +51,6 @@ public class WhitelistAccessResolveAspect {
     /** 白名单弹窗文案 */
     private static final String WHITELIST_TOAST_PREFIX = "business.whitelist.toast.";
 
-    @Resource
-    private ConfigByEnvironment config;
-
     ExpressionParser parser = new SpelExpressionParser();
     LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
 
@@ -63,7 +59,7 @@ public class WhitelistAccessResolveAspect {
      */
     @Around("@annotation(whitelistAccessPoint)")
     public Object doAround(ProceedingJoinPoint pjp, WhitelistAccess whitelistAccessPoint) throws Throwable {
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(config.get(WHITELIST_SWITCH).orElse(null))) {
+        if (!Boolean.TRUE.toString().equalsIgnoreCase(ConfigByEnvironment.get(WHITELIST_SWITCH).orElse(null))) {
             // 白名单开关关闭
             return pjp.proceed();
         }
@@ -81,7 +77,7 @@ public class WhitelistAccessResolveAspect {
         String businessKey = whitelistAccessPoint.businessKey();
 
         // 校验业务开关
-        String businessSwitch = config.get(WHITELIST_KEY_PREFIX + businessKey).orElse(null);
+        String businessSwitch = ConfigByEnvironment.get(WHITELIST_KEY_PREFIX + businessKey).orElse(null);
         if (!Boolean.TRUE.toString().equalsIgnoreCase(businessSwitch)) {
             // 业务白名单关闭
             log.info("白名单校验关闭 业务键:[{}]", businessKey);
@@ -102,11 +98,11 @@ public class WhitelistAccessResolveAspect {
         log.info("白名单校验开启 业务键:[{}], 校验值:[{}]", businessKey, checkValue);
 
         // 校验白名单
-        String businessWhitelist = config.get(WHITELIST_VALUE_PREFIX + businessKey).orElse(null);
+        String businessWhitelist = ConfigByEnvironment.get(WHITELIST_VALUE_PREFIX + businessKey).orElse(null);
         if (StringUtils.isEmpty(businessWhitelist) || StringUtils.isEmpty(checkValue) || !checkWhitelist(businessWhitelist, checkValue)) {
             log.info("白名单校验不通过 业务键:[{}], 校验值:[{}]", businessKey, checkValue);
             // 白名单校验不通过
-            throw new IllegalAccessException(config.get(WHITELIST_TOAST_PREFIX + businessKey).orElse(DEFAULT_WHITELIST_TOAST));
+            throw new IllegalAccessException(ConfigByEnvironment.get(WHITELIST_TOAST_PREFIX + businessKey).orElse(DEFAULT_WHITELIST_TOAST));
         }
         log.info("白名单校验通过 业务键:[{}], 校验值:[{}]", businessKey, checkValue);
         return pjp.proceed();
@@ -124,11 +120,11 @@ public class WhitelistAccessResolveAspect {
         // 校验白名单时间，校验通过表示在需要白名单时间范围内，校验不通过表示无需校验白名单
         Long whitelistBeginAt = null;
         Long whitelistEndAt = null;
-        String whitelistBeginAtStr = config.get(WHITELIST_CHECK_BEGIN_AT_PREFIX + businessKey).orElse(null);
+        String whitelistBeginAtStr = ConfigByEnvironment.get(WHITELIST_CHECK_BEGIN_AT_PREFIX + businessKey).orElse(null);
         if (null != whitelistBeginAtStr) {
             whitelistBeginAt = Long.parseLong(whitelistBeginAtStr);
         }
-        String whitelistEndAtStr = config.get(WHITELIST_CHECK_END_AT_PREFIX + businessKey).orElse(null);
+        String whitelistEndAtStr = ConfigByEnvironment.get(WHITELIST_CHECK_END_AT_PREFIX + businessKey).orElse(null);
         if (null != whitelistEndAtStr) {
             whitelistEndAt = Long.parseLong(whitelistEndAtStr);
         }
