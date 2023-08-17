@@ -17,16 +17,32 @@ import java.util.Optional;
 @Component
 public class ConfigByEnvironment implements EnvironmentAware {
 
-    private Environment environment;
+    private ConfigByEnvironment() {
+    }
+
+    private static Environment environment;
 
     @Override
     public void setEnvironment(@NonNull Environment environment) {
-        this.environment = environment;
+        ConfigByEnvironment.environment = environment;
     }
 
-    public Optional<String> get(String configKey) {
+    public static Optional<String> get(String configKey) {
         String config = environment.getProperty(configKey);
         return Objects.isNull(config) ? Optional.empty() : Optional.of(config);
+    }
+
+    public static <T> Optional<T> get(String configKey, Class<T> targetType) {
+        T config = environment.getProperty(configKey, targetType);
+        return Objects.isNull(config) ? Optional.empty() : Optional.of(config);
+    }
+
+    public static String getProperty(String key) {
+        return environment.getProperty(key);
+    }
+
+    public static <T> T getProperty(String key, Class<T> targetType) {
+        return environment.getProperty(key, targetType);
     }
 
 }
