@@ -1,4 +1,4 @@
-package cn.huazai.tool.exception;
+package cn.huazai.tool.whitelist.access.exception;
 
 /**
  * 非法访问异常

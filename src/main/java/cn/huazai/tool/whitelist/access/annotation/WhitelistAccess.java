@@ -1,4 +1,4 @@
-package cn.huazai.tool.annotation;
+package cn.huazai.tool.whitelist.access.annotation;
 
 import java.lang.annotation.*;
 

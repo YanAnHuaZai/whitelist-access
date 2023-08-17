@@ -1,8 +1,8 @@
-package cn.huazai.tool.aspect;
+package cn.huazai.tool.whitelist.access.aspect;
 
-import cn.huazai.tool.annotation.WhitelistAccess;
-import cn.huazai.tool.exception.IllegalAccessException;
-import cn.huazai.tool.utils.ConfigByEnvironment;
+import cn.huazai.tool.whitelist.access.annotation.WhitelistAccess;
+import cn.huazai.tool.whitelist.access.exception.IllegalAccessException;
+import cn.huazai.tool.whitelist.access.utils.ConfigByEnvironment;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

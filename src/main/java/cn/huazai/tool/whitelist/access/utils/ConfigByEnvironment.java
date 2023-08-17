@@ -1,4 +1,4 @@
-package cn.huazai.tool.utils;
+package cn.huazai.tool.whitelist.access.utils;
 
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;

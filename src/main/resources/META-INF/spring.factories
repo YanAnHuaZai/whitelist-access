@@ -1,4 +1,4 @@
 
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.huazai.tool.configure.BeanConfiguration
-#cn.huazai.tool.utils.ConfigByEnvironment
-#cn.huazai.tool.aspect.WhitelistAccessResolveAspect
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.huazai.tool.whitelist.access.configure.BeanConfiguration
+#ConfigByEnvironment
+#WhitelistAccessResolveAspect
